@@ -1,1 +1,26 @@
 
+#!/bin/bash
+
+#===============================
+# AWS Resource Usage Report
+#===============================
+
+echo "==============================="
+echo "  AWS Resource Usage Summary"
+echo "==============================="
+
+# S3 Buckets
+echo -e "\n[S3 Buckets]"
+aws s3 ls || echo "Failed to list S3 buckets."
+
+# EC2 Instances
+echo -e "\n[EC2 Instances]"
+aws ec2 describe-instances --query 'Reservations[*].Instances[*].[InstanceId,State.Name,InstanceType,PublicIpAddress]' --output table || echo "Failed to describe EC2 instances."
+
+# Lambda Functions
+echo -e "\n[Lambda Functions]"
+aws lambda list-functions --query 'Functions[*].[FunctionName,Runtime,LastModified]' --output table || echo "Failed to list Lambda functions."
+
+# IAM Users
+echo -e "\n[IAM Users]"
+aws iam list-users --query 'Users[*].[UserName,CreateDate]' --output table || echo "Failed to list IAM users."
